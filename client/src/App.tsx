@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { SegmentForm } from "./features/survey/SegmentForm";
 import { SurveyForm } from "./features/survey/SurveyForm";
 
+import { RepairQueue } from "./features/repairs/RepairQueue";
+import { RepeatComparison } from "./features/repairs/RepeatComparison";
 type SurveyList = {
   items: Array<{
     id: string;
@@ -257,6 +259,9 @@ export default function App() {
           <SurveyForm onCreated={() => void refreshSurveys()} />
           <SegmentForm />
         </section>
+
+                <RepairQueue />
+        <RepeatComparison />
 
         <section className="sequence" aria-labelledby="sequence-title">
           <div className="section-heading compact-heading">
