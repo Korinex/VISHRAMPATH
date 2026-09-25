@@ -3,11 +3,14 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from app.database import initialize_database, list_surveys, reset_demo_fixture
 from app.survey_routes import initialize_survey_schema, router as survey_router
+from app.review_routes import initialize_review_schema, router as review_router
+from app.route_routes import router as route_router
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     initialize_database()
     initialize_survey_schema()
+    initialize_review_schema()
     yield
 app = FastAPI(
     title="VishraamPath local API",
@@ -17,6 +20,8 @@ app = FastAPI(
     
 )
 app.include_router(survey_router)
+app.include_router(review_router)
+app.include_router(route_router)
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "vishraampath-api"}
