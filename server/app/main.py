@@ -2,16 +2,21 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from fastapi import FastAPI
 from app.database import initialize_database, list_surveys, reset_demo_fixture
+from app.survey_routes import initialize_survey_schema, router as survey_router
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     initialize_database()
+    initialize_survey_schema()
     yield
 app = FastAPI(
     title="VishraamPath local API",
     version="0.1.0",
     description="Hour 1 foundation. Field capture is not enabled.",
     lifespan=lifespan,
+    
 )
+app.include_router(survey_router)
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "vishraampath-api"}
