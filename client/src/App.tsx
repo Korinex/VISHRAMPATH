@@ -1,7 +1,8 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SegmentForm } from "./features/survey/SegmentForm";
 import { SurveyForm } from "./features/survey/SurveyForm";
-
+import { RoutePlanner } from "./features/route/RoutePlanner";
+import { ReviewInbox } from "./features/review/ReviewInbox";
 import { RepairQueue } from "./features/repairs/RepairQueue";
 import { RepeatComparison } from "./features/repairs/RepeatComparison";
 type SurveyList = {
@@ -258,9 +259,10 @@ export default function App() {
 
           <SurveyForm onCreated={() => void refreshSurveys()} />
           <SegmentForm />
+          <ReviewInbox />
         </section>
-
-                <RepairQueue />
+        <RoutePlanner />
+        <RepairQueue />
         <RepeatComparison />
 
         <section className="sequence" aria-labelledby="sequence-title">
