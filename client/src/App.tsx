@@ -69,17 +69,40 @@ export default function App() {
 
       setResetMessage("Demo marker reset. No field records were changed.");
 
-      const surveysResponse = await fetch("/api/v1/surveys");
-      if (!surveysResponse.ok) {
+      const [metaResponse, surveysResponse] = await Promise.all([
+        fetch("/api/v1/meta"),
+        fetch("/api/v1/surveys"),
+      ]);
+
+      if (!metaResponse.ok || !surveysResponse.ok) {
         setConnection("unavailable");
         setResetMessage(
-          "Reset completed, but the marker list could not refresh. Reload the page to inspect it.",
+          "Reset completed, but the API status or marker list could not be verified. Reload the page to inspect it.",
         );
         return;
       }
+
+      const meta: {
+        data_status: string;
+        field_data_status: string;
+        field_capture_enabled: boolean;
+      } = await metaResponse.json();
+
       const surveys: SurveyList = await surveysResponse.json();
       setSurveyList(surveys);
-      setConnection("connected");
+
+      const safetyVerified =
+        meta.data_status === "demo_fixture_only" &&
+        meta.field_data_status === "not_collected" &&
+        meta.field_capture_enabled === false;
+
+      setConnection(safetyVerified ? "connected" : "unavailable");
+
+      if (!safetyVerified) {
+        setResetMessage(
+          "Reset completed, but the API safety status could not be verified.",
+        );
+      }
     } catch {
       setConnection("unavailable");
       setResetMessage("Could not confirm the reset. Reload the page before retrying.");
@@ -150,7 +173,12 @@ export default function App() {
               <div className="panel-topline">
                 <span>LOCAL SURVEY FIXTURE</span>
                 <div className="panel-actions">
-                  <span className="connection-state" data-state={connection}>
+                  <span
+                    className="connection-state"
+                    data-state={connection}
+                    role="status"
+                    aria-live="polite"
+                  >
                     <span className="state-dot" aria-hidden="true" />
                     {connectionText}
                   </span>
