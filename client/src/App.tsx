@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { SegmentForm } from "./features/survey/SegmentForm";
+import { SurveyForm } from "./features/survey/SurveyForm";
 
 type SurveyList = {
   items: Array<{
@@ -107,6 +109,12 @@ export default function App() {
       setConnection("unavailable");
       setResetMessage("Could not confirm the reset. Reload the page before retrying.");
     }
+  }
+
+  async function refreshSurveys() {
+    const response = await fetch("/api/v1/surveys");
+    if (!response.ok) throw new Error("Survey list unavailable.");
+    setSurveyList(await response.json());
   }
 
   const connectionText = {
@@ -245,6 +253,9 @@ export default function App() {
               </p>
             </aside>
           </div>
+
+          <SurveyForm onCreated={() => void refreshSurveys()} />
+          <SegmentForm />
         </section>
 
         <section className="sequence" aria-labelledby="sequence-title">
