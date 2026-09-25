@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { SegmentForm } from "./features/survey/SegmentForm";
 import { SurveyForm } from "./features/survey/SurveyForm";
 
+import { RoutePlanner } from "./features/route/RoutePlanner";
+
+import { ReviewInbox } from "./features/review/ReviewInbox";
 type SurveyList = {
   items: Array<{
     id: string;
@@ -256,7 +259,10 @@ export default function App() {
 
           <SurveyForm onCreated={() => void refreshSurveys()} />
           <SegmentForm />
+          <ReviewInbox />
         </section>
+
+                <RoutePlanner />
 
         <section className="sequence" aria-labelledby="sequence-title">
           <div className="section-heading compact-heading">
