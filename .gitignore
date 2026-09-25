@@ -1,0 +1,20 @@
+# Create and write the .gitignore file directly
+cat << 'EOF' > .gitignore
+# JavaScript dependencies and builds
+node_modules/
+client/node_modules/
+client/dist/
+
+# Python environments and bytecode
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local database and secrets
+server/data/*.sqlite3
+.env
+.env.*
+!.env.example
+EOF
