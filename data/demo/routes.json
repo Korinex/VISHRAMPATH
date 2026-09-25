@@ -1,0 +1,19 @@
+{
+  "demo_data": true,
+  "route_source": "hand-authored illustrative fixture",
+  "geometry": null,
+  "notice": "Not a real mapped or field-verified route. No street coordinates or distance are claimed.",
+  "options": [
+    {
+      "id": "sample-route-a",
+      "origin_id": "demo-origin",
+      "destination_id": "demo-market",
+      "segments": ["demo-segment-01"],
+      "limitations": ["No field measurements available", "Segment has not been assessed"],
+      "instructions": {
+        "mr": ["हा केवळ नमुना मार्ग आहे. प्रत्यक्ष मार्गदर्शन नाही."],
+        "hi": ["यह केवल नमूना मार्ग है। यह वास्तविक मार्गदर्शन नहीं है।"]
+      }
+    }
+  ]
+}
