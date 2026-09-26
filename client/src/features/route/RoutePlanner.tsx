@@ -11,6 +11,16 @@ type Plan = {
   instructions: string[];
   demo_data: boolean;
   limitations: string[];
+  options: RouteOption[];
+};
+
+type RouteOption = {
+  route_id: string;
+  label: string;
+  selection_reason: string;
+  segments: string[];
+  warnings: string[];
+  instructions: string[];
 };
 
 const profileLabels: Record<string, string> = {
@@ -83,6 +93,12 @@ export function RoutePlanner() {
     window.speechSynthesis.speak(utterance);
   }
 
+  function chooseOption(option: RouteOption) {
+    if (!plan) return;
+    setSpeechMessage("");
+    setPlan({ ...plan, route_id: option.route_id, segments: option.segments, warnings: option.warnings, instructions: option.instructions });
+  }
+
   return (
     <section aria-labelledby="route-title">
       <p className="eyebrow">STEP 1 OF 2 · PLAN A WALK</p>
@@ -113,12 +129,19 @@ export function RoutePlanner() {
       {plan && <div className="route-result" aria-live="polite">
         <div className="route-result-heading">
           <span className="route-fixture-tag">SAMPLE ONLY</span>
-          <strong>One route option is ready</strong>
+          <strong>{plan.options.length} sample route options are ready</strong>
         </div>
         <p className="route-profile-line">For <strong>{origin}</strong> to <strong>{destination}</strong> · {profileLabels[plan.profile_id]} · {languageLabels[plan.language]}</p>
+        <div className="route-options" aria-label="Sample route options">
+          {plan.options.map((option) => <button key={option.route_id} type="button" className={`route-option ${plan.route_id === option.route_id ? "route-option--selected" : ""}`} onClick={() => chooseOption(option)} aria-pressed={plan.route_id === option.route_id}>
+            <span className="route-option-label">{plan.route_id === option.route_id ? "SELECTED SAMPLE OPTION" : "SAMPLE OPTION"}</span>
+            <strong>{option.label}</strong>
+            <span>{option.selection_reason}</span>
+          </button>)}
+        </div>
         <div className="route-option-card">
           <div><span className="route-option-label">ROUTE STATUS</span><strong>Not assessed</strong></div>
-          <div><span className="route-option-label">WHAT THIS SHOWS</span><strong>A gentler-route decision, with limits</strong></div>
+          <div><span className="route-option-label">WHAT THIS SHOWS</span><strong>A route comparison with honest limits</strong></div>
         </div>
         <div className="route-sequence" aria-label="Sample route sequence with no real locations">
           <div className="route-sequence-stop"><span>START</span><strong>{origin}</strong></div>

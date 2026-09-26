@@ -463,3 +463,11 @@ h1, h2, h3, p { margin-top: 0; }
   .feature-main .route-result-columns ul, .feature-main .route-result-columns ol { font-size: 15px !important; }
   .demo-banner { line-height: 1.55; }
 }
+
+.route-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 15px 0; }
+.route-option { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; min-height: 132px; padding: 14px; border: 2px solid #bfc7bd; background: #fffefa; color: var(--ink); text-align: left; cursor: pointer; }
+.route-option:hover, .route-option:focus-visible { border-color: var(--green); background: var(--green-wash); }
+.route-option--selected { border-color: var(--green); box-shadow: inset 4px 0 0 var(--green); background: #f3f8f2; }
+.route-option > strong { font-size: 17px; line-height: 1.3; }
+.route-option > span:last-child { color: #59655b; font-size: 14px; line-height: 1.45; }
+@media (max-width: 600px) { .route-options { grid-template-columns: 1fr; } .route-option { min-height: 0; } }

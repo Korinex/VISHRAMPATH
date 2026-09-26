@@ -19,14 +19,25 @@ class RouteRequest(BaseModel):
 @router.post("/routes/plan")
 def plan_route(request: RouteRequest) -> dict:
     fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
-    route = next(
-        (item for item in fixture["options"]
-         if item["origin_id"] == request.origin_id
-         and item["destination_id"] == request.destination_id),
-        None,
-    )
-    if route is None:
+    routes = [
+        item for item in fixture["options"]
+        if item["origin_id"] == request.origin_id
+        and item["destination_id"] == request.destination_id
+    ]
+    if not routes:
         raise HTTPException(status_code=404, detail="No demo route for that pair")
+    route = routes[0]
+
+    def present(item: dict) -> dict:
+        return {
+            "route_id": item["id"],
+            "label": item["label"],
+            "selection_reason": item["selection_reason"],
+            "segments": item["segments"],
+            "warnings": item["limitations"],
+            "instructions": item["instructions"][request.language],
+        }
+
     return {
         "route_id": route["id"],
         "profile_id": request.profile_id,
@@ -39,4 +50,5 @@ def plan_route(request: RouteRequest) -> dict:
         "estimated": True,
         "demo_data": True,
         "limitations": [fixture["notice"], "Screening is decision support, not a safety guarantee."],
+        "options": [present(item) for item in routes],
     }
