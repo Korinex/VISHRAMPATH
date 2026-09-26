@@ -97,18 +97,18 @@ export function ReviewInbox() {
 
   return (
     <section aria-labelledby="review-title">
-      <p className="eyebrow">DEMO DATA / HUMAN DECISION REQUIRED</p>
-      <h2 id="review-title">Suggestion review</h2>
+      <p className="eyebrow">STEP 2 · CHECK THE INFORMATION</p>
+      <h2 id="review-title">Check each finding</h2>
       {message && <p aria-live="polite">{message}</p>}
-      {surveys.length > 0 && <label>Survey record
+      {surveys.length > 0 && <label>Which survey are you checking?
         <select value={surveyId ?? ""} onChange={(event) => {
           void load(profile, event.target.value).catch(() => setMessage("Review service unavailable."));
         }}>
           {surveys.map((survey) => <option key={survey.id} value={survey.id}>{survey.label}</option>)}
         </select>
       </label>}
-      {surveyId && <p>Selected record: <strong>{surveyLabel}</strong></p>}
-      <label>Screening profile
+      {surveyId && <p className="selected-record">You are checking: <strong>{surveyLabel}</strong></p>}
+      <label>Who is this information for?
         <select value={profile} onChange={(event) => {
           const value = event.target.value;
           setProfile(value);
@@ -119,21 +119,22 @@ export function ReviewInbox() {
         </select>
       </label>
       {screeningResult && <aside className="review-card" aria-live="polite">
-        <h3>{screeningResult.label}: no numeric score</h3>
+        <h3>{screeningResult.label}</h3>
         <p>{screeningResult.explanation}</p>
-        <p>Rule pack: {screeningResult.rule_pack_version}. Unknown: {screeningResult.unknown_dimensions.join(", ")}.</p>
+        <p><strong>Why no score?</strong> We still need to check: {screeningResult.unknown_dimensions.join(", ")}.</p>
       </aside>}
       {items.map((item) => (
         <article className="review-card" key={item.id}>
-          <p>{item.class_code.replaceAll("_", " ")} · {item.segment_id}</p>
-          <div className="evidence-placeholder">ILLUSTRATIVE EVIDENCE RECORD<br /><span>No photo or video is attached in this prototype.</span></div>
+          <p className="review-card-title">{item.class_code.replaceAll("_", " ")}</p>
+          <p className="review-card-segment">Part of the path: {item.segment_id}</p>
+          <div className="evidence-placeholder">SAMPLE INFORMATION<br /><span>No photo or video is attached in this demonstration.</span></div>
           <p>{item.description}</p>
-          <p>Source: {item.source}. Confidence is not proof.</p>
-          <p>Current decision: {item.latest_decision ?? "Not reviewed"}</p>
+          <p>Source: sample record. A person must check it before we use it.</p>
+          <p>Current answer: {item.latest_decision ?? "Not checked yet"}</p>
           <div className="review-actions">
-            <button type="button" onClick={() => void decide(item.id, "confirmed")}>Confirm, medium severity</button>
-            <button type="button" onClick={() => void decide(item.id, "rejected")}>Reject</button>
-            <button type="button" onClick={() => void decide(item.id, "uncertain")}>Uncertain</button>
+            <button type="button" onClick={() => void decide(item.id, "confirmed")}>This looks correct</button>
+            <button type="button" onClick={() => void decide(item.id, "rejected")}>This is not correct</button>
+            <button type="button" onClick={() => void decide(item.id, "uncertain")}>I need more information</button>
           </div>
         </article>
       ))}

@@ -104,35 +104,35 @@ export function RoutePlanner() {
 
   return (
     <section aria-labelledby="route-title">
-      <p className="eyebrow">STEP 1 OF 2 · PLAN A WALK</p>
-      <h2 id="route-title">Where would you like to go?</h2>
-      <p className="route-helper">Type the two places in simple words. Location access is not needed for this prototype.</p>
+      <p className="eyebrow">STEP 1 · TELL US WHERE YOU WANT TO GO</p>
+      <h2 id="route-title">Plan a walk</h2>
+      <p className="route-helper">Enter your starting place and where you want to go. This is a sample map for the demonstration; we do not need your phone location.</p>
       <form className="route-form route-form--senior" onSubmit={submit}>
-        <label htmlFor="route-origin">Starting point
+        <label htmlFor="route-origin">Where are you starting?
           <input id="route-origin" value={origin} onChange={(event) => setOrigin(event.target.value)} placeholder="For example: my home" autoComplete="street-address" />
         </label>
-        <label htmlFor="route-destination">Destination
+        <label htmlFor="route-destination">Where do you want to go?
           <input id="route-destination" value={destination} onChange={(event) => setDestination(event.target.value)} placeholder="For example: the market" />
         </label>
-        <label htmlFor="route-profile">I am walking with
+        <label htmlFor="route-profile">How will you travel?
           <select id="route-profile" value={profile} onChange={(event) => setProfile(event.target.value)}>
             <option value="walking_stick">A walking stick</option>
             <option value="wheelchair">A wheelchair</option>
           </select>
         </label>
-        <label htmlFor="route-language">Show guidance in
+        <label htmlFor="route-language">Which language should we use?
           <select id="route-language" value={language} onChange={(event) => setLanguage(event.target.value)}>
             <option value="mr">मराठी (Marathi)</option>
             <option value="hi">हिंदी (Hindi)</option>
           </select>
         </label>
-        <button className="route-primary-action" type="submit" disabled={loading}>{loading ? "Preparing the sample…" : "Show route options"}</button>
+        <button className="route-primary-action" type="submit" disabled={loading}>{loading ? "Preparing your sample map…" : "Show me the sample routes"}</button>
       </form>
       {message && <p className="form-message form-message--error" role="alert">{message}</p>}
       {plan && <div className="route-result" aria-live="polite">
         <div className="route-result-heading">
           <span className="route-fixture-tag">SAMPLE ONLY</span>
-          <strong>{plan.options.length} sample route options are ready</strong>
+          <strong>Choose one of {plan.options.length} sample routes</strong>
         </div>
         <p className="route-profile-line">For <strong>{origin}</strong> to <strong>{destination}</strong> · {profileLabels[plan.profile_id]} · {languageLabels[plan.language]}</p>
         <div className="route-options" aria-label="Sample route options">
@@ -149,8 +149,8 @@ export function RoutePlanner() {
           <div className="rule-checks">{plan.rule_pack.checks.map((check) => <div key={check.id}><span className="rule-check-mark">?</span><span>{check.label}</span><strong>Not assessed</strong></div>)}</div>
         </section>
         <div className="route-option-card">
-          <div><span className="route-option-label">ROUTE STATUS</span><strong>Not assessed</strong></div>
-          <div><span className="route-option-label">WHAT THIS SHOWS</span><strong>A route comparison with honest limits</strong></div>
+          <div><span className="route-option-label">IS THIS ROUTE SAFE?</span><strong>We do not know yet</strong></div>
+          <div><span className="route-option-label">WHAT THIS DEMO SHOWS</span><strong>How route choices can use reviewed information</strong></div>
         </div>
         <div className="route-sequence" aria-label="Sample route sequence with no real locations">
           <div className="route-sequence-stop"><span>START</span><strong>{origin}</strong></div>
@@ -159,18 +159,18 @@ export function RoutePlanner() {
           <div className="route-sequence-connector" aria-hidden="true" />
           <div className="route-sequence-stop"><span>END</span><strong>{destination}</strong></div>
         </div>
-        <p className="route-sequence-note">This prototype has no live map, distance, travel time, street coordinates, or turn-by-turn navigation. The names you entered are retained only to explain the flow.</p>
+        <p className="route-sequence-note">This is an illustrative map. It does not show live directions, distance, travel time, or a real street condition.</p>
         <div className="route-result-columns">
           <div>
-            <h3>What we do not know yet</h3>
+            <h3>What we still need to check</h3>
             <ul>{plan.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
           </div>
           <div>
-            <h3>Step 2 · Read or hear the guidance</h3>
+            <h3>Read or hear the sample steps</h3>
             <ol>{plan.instructions.map((line, index) => <li key={`${index}-${line}`} lang={language === "mr" ? "mr" : "hi"}>{line}</li>)}</ol>
           </div>
         </div>
-        <button className="speech-button" type="button" onClick={replayInstructions}>Play these written steps</button>
+        <button className="speech-button" type="button" onClick={replayInstructions}>Read these steps aloud</button>
         <p className="speech-status" aria-live="polite">{speechMessage}</p>
         <p className="route-limitations"><strong>Important:</strong> AI can suggest an observation, but a person must review it. “Not assessed” does not mean accessible or safe.</p>
       </div>}

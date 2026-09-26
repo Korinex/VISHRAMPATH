@@ -72,35 +72,36 @@ export function RepairQueue() {
 
   return (
     <section aria-labelledby="repair-title">
-      <p className="eyebrow">DEMO DATA / ADVISORY ONLY</p>
-      <h2 id="repair-title">Fix-First review queue</h2>
+      <p className="eyebrow">STEP 3 · PLAN THE NEXT ACTION</p>
+      <h2 id="repair-title">Choose what to fix first</h2>
       <p>{notice}</p>
       <a href="/api/v1/repair-queue.csv">Download CSV</a>
-      <h3>Confirmed demo decisions</h3>
+      <h3>Findings ready for planning</h3>
       {candidates.map((candidate) => (
         <article className="repair-row" key={candidate.id}>
-          <p>DEMO DATA. {candidate.class_code.replaceAll("_", " ")}</p>
+          <p className="repair-row-title">SAMPLE FINDING · {candidate.class_code.replaceAll("_", " ")}</p>
+          <p>Path section: {candidate.segment_id}</p>
           <p>{candidate.description}</p>
-          <label>Illustrative action, for review only
+          <label>What could the team check or do next?
             <input value={actions[candidate.id] ?? ""} onChange={(event) => setActions({ ...actions, [candidate.id]: event.target.value })} />
           </label>
-          <button type="button" onClick={() => void addToQueue(candidate)}>Add demo item</button>
+          <button type="button" onClick={() => void addToQueue(candidate)}>Add to planning list</button>
         </article>
       ))}
       {items.length === 0 && <p>No human-confirmed repair items are in the queue.</p>}
       {items.map((item) => (
         <article className="repair-row" key={item.id}>
-          <p>Priority {item.priority_rank}: {item.severity} / {item.issue_code}</p>
+          <p className="repair-row-title">Planning order {item.priority_rank} · {item.issue_code.replaceAll("_", " ")}</p>
           <p>{item.evidence_description}</p>
-          <p>Suggested action: {item.suggested_action}</p>
+          <p><strong>Suggested next step:</strong> {item.suggested_action}</p>
           <p>{item.uncertainty_note}</p>
-          <p>Cost: {item.indicative_cost_amount ?? "Not estimated"}. No source-backed cost entered.</p>
-          <p>Status: {item.status}. This is not a verified repair.</p>
+          <p><strong>Cost:</strong> {item.indicative_cost_amount ?? "Not entered yet"}. No source-backed cost is available.</p>
+          <p><strong>Status:</strong> Waiting for team review. This is not a completed or verified repair.</p>
           {item.status === "for_review" && <>
-            <label>Demo intervention note
+            <label>Write down what the team did (sample only)
               <input value={interventions[item.id] ?? ""} onChange={(event) => setInterventions({ ...interventions, [item.id]: event.target.value })} />
             </label>
-            <button type="button" onClick={() => void recordIntervention(item)}>Record demo action</button>
+            <button type="button" onClick={() => void recordIntervention(item)}>Save this sample action</button>
           </>}
         </article>
       ))}
