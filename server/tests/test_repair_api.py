@@ -4,7 +4,7 @@ from app.database import initialize_database, list_surveys, reset_demo_fixture
 from app.repair_routes import (
     InterventionInput, RepairCreate, RepeatInput, add_intervention,
     create_repeat_link, create_repair, export_queue, initialize_repair_schema,
-    list_queue,
+    list_queue, report_queue,
 )
 from app.review_routes import DecisionInput, initialize_review_schema, review, suggestions
 from app.survey_routes import (
@@ -44,6 +44,9 @@ def test_confirmed_queue_item_keeps_cost_blank_and_intervention_unverified():
     csv_response = export_queue()
     assert "demo_data" in csv_response.body.decode("utf-8")
     assert "uncertainty_note" in csv_response.body.decode("utf-8")
+    report_response = report_queue()
+    assert report_response.media_type == "text/html"
+    assert "Advisory demo report" in report_response.body.decode("utf-8")
     intervention = add_intervention(
         created["id"],
         InterventionInput(description="Demo-only action note", recorded_by="Team demo"),
