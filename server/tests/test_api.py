@@ -51,7 +51,7 @@ def test_metadata_is_honest_about_field_data() -> None:
 
 
 def test_demo_marker_is_explicit_and_reset_is_idempotent(tmp_path, monkeypatch) -> None:
-    database_file = tmp_path / "hour1-test.sqlite3"
+    database_file = tmp_path / "demo-nagpur-test.sqlite3"
     monkeypatch.setenv("VISHRAAMPATH_DB", str(database_file))
     initialize_database()
     initialize_database()
@@ -60,7 +60,7 @@ def test_demo_marker_is_explicit_and_reset_is_idempotent(tmp_path, monkeypatch) 
     assert response.status_code == 200
     items = response.json()["items"]
     assert len(items) == 1
-    assert items[0]["id"] == "hour-1-demo-corridor"
+    assert items[0]["id"] == "demo-nagpur-corridor"
     assert items[0]["label"] == "DEMO DATA / Nagpur corridor placeholder"
     assert items[0]["capture_mode"] == "demo_fixture"
     assert items[0]["permission_status"] == "unknown"
@@ -71,7 +71,7 @@ def test_demo_marker_is_explicit_and_reset_is_idempotent(tmp_path, monkeypatch) 
         with pytest.raises(sqlite3.IntegrityError, match="demo_data is immutable"):
             connection.execute(
                 "UPDATE survey SET demo_data = 0 WHERE id = ?",
-                ("hour-1-demo-corridor",),
+                ("demo-nagpur-corridor",),
             )
 
     reset_response = post("/api/v1/demo/reset")

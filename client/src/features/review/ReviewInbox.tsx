@@ -17,22 +17,63 @@ type ScreeningResult = {
   unknown_dimensions: string[];
 };
 
+type Survey = { id: string; label: string; demo_data?: boolean };
+
 export function ReviewInbox() {
+  const [surveys, setSurveys] = useState<Survey[]>([]);
   const [items, setItems] = useState<Item[]>([]);
-  const [message, setMessage] = useState("Loading demo suggestions");
+  const [message, setMessage] = useState("Loading demo surveys…");
   const [profile, setProfile] = useState("walking_stick");
   const [screeningResult, setScreeningResult] = useState<ScreeningResult | null>(null);
+  const [surveyId, setSurveyId] = useState<string | null>(null);
+  const [surveyLabel, setSurveyLabel] = useState("");
 
-  async function load(nextProfile = profile) {
-    const [response, scoreResponse] = await Promise.all([
-      fetch("/api/v1/surveys/hour-1-demo-corridor/suggestions"),
-      fetch(`/api/v1/segments/demo-segment-01/screening?profile_id=${nextProfile}`),
-    ]);
-    if (!response.ok || !scoreResponse.ok) throw new Error("Review service is unavailable.");
+  async function load(nextProfile = profile, requestedSurveyId = surveyId ?? undefined) {
+    setMessage("Loading the selected survey…");
+    const surveysResponse = await fetch("/api/v1/surveys");
+    if (!surveysResponse.ok) throw new Error("Review service is unavailable.");
+    const surveysResult = await surveysResponse.json() as { items?: Survey[] };
+    const availableSurveys = surveysResult.items ?? [];
+    setSurveys(availableSurveys);
+    const selectedSurvey = availableSurveys.find((survey) => survey.id === requestedSurveyId)
+      ?? availableSurveys.find((survey) => survey.demo_data)
+      ?? availableSurveys[0]
+      ?? null;
+
+    if (!selectedSurvey) {
+      setSurveyId(null);
+      setSurveyLabel("");
+      setItems([]);
+      setScreeningResult(null);
+      setMessage("No survey records exist yet. Create a demo survey in Survey to begin.");
+      return;
+    }
+
+    const nextSurveyId = selectedSurvey.id;
+    setSurveyId(nextSurveyId);
+    setSurveyLabel(selectedSurvey.label);
+
+    const segmentsResponse = await fetch(`/api/v1/surveys/${nextSurveyId}/segments`);
+    if (!segmentsResponse.ok) throw new Error("Review service is unavailable.");
+    const segmentsResult = await segmentsResponse.json() as { items?: Array<{ id: string }> };
+    const selectedSegment = segmentsResult.items?.[0] ?? null;
+
+    const response = await fetch(`/api/v1/surveys/${nextSurveyId}/suggestions`);
+    if (!response.ok) throw new Error("Review service is unavailable.");
     const result = await response.json();
-    setScreeningResult(await scoreResponse.json());
+    if (selectedSegment) {
+      const scoreResponse = await fetch(`/api/v1/segments/${selectedSegment.id}/screening?profile_id=${nextProfile}`);
+      if (!scoreResponse.ok) throw new Error("Screening status is unavailable.");
+      setScreeningResult(await scoreResponse.json());
+    } else {
+      setScreeningResult(null);
+    }
     setItems(result.items);
-    setMessage(result.items.length ? "" : "No suggestions available. No defect is being claimed.");
+    setMessage(result.items.length
+      ? ""
+      : selectedSegment
+        ? "This survey has a segment but no suggestion attached. Saving a survey or segment does not generate an AI observation."
+        : "This survey has no segment yet. Add one in Survey. Saving a segment does not generate an AI observation.");
   }
 
   useEffect(() => { void load().catch(() => setMessage("Review service unavailable.")); }, []);
@@ -58,6 +99,14 @@ export function ReviewInbox() {
       <p className="eyebrow">DEMO DATA / HUMAN DECISION REQUIRED</p>
       <h2 id="review-title">Suggestion review</h2>
       {message && <p aria-live="polite">{message}</p>}
+      {surveys.length > 0 && <label>Survey record
+        <select value={surveyId ?? ""} onChange={(event) => {
+          void load(profile, event.target.value).catch(() => setMessage("Review service unavailable."));
+        }}>
+          {surveys.map((survey) => <option key={survey.id} value={survey.id}>{survey.label}</option>)}
+        </select>
+      </label>}
+      {surveyId && <p>Selected record: <strong>{surveyLabel}</strong></p>}
       <label>Screening profile
         <select value={profile} onChange={(event) => {
           const value = event.target.value;

@@ -17,9 +17,8 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(
     title="VishraamPath local API",
     version="0.1.0",
-    description="Hour 1 foundation. Field capture is not enabled.",
+    description="Local prototype API. Demo fixtures only; field capture is not enabled.",
     lifespan=lifespan,
-    
 )
 app.include_router(survey_router)
 app.include_router(review_router)

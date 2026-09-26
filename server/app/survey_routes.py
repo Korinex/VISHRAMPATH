@@ -32,7 +32,7 @@ def initialize_survey_schema() -> None:
                  alignment_status, demo_data)
             VALUES (?, ?, 1, NULL, 'Demo segment 01', 'uncertain', 1)
             """,
-            ("demo-segment-01", "hour-1-demo-corridor"),
+            ("demo-segment-01", "demo-nagpur-corridor"),
         )
         connection.execute(
             """
@@ -43,7 +43,7 @@ def initialize_survey_schema() -> None:
             """,
             (
                 "demo-evidence-01",
-                "hour-1-demo-corridor",
+                "demo-nagpur-corridor",
                 "demo-segment-01",
                 "DEMO DATA. Placeholder note only. No street condition was observed.",
                 datetime.now(timezone.utc).isoformat(timespec="seconds"),

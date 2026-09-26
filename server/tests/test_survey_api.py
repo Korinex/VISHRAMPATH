@@ -32,11 +32,11 @@ def test_ui_cannot_assert_permission_without_recorded_check():
 
 def test_segment_and_note_inherit_demo_marker():
     segment = create_segment(
-        "hour-1-demo-corridor",
+        "demo-nagpur-corridor",
         SegmentCreate(sequence_no=2, street_label="Demo segment two"),
     )
     note = create_evidence(
-        "hour-1-demo-corridor",
+        "demo-nagpur-corridor",
         EvidenceCreate(segment_id=segment["id"], description="DEMO DATA note only"),
     )
     assert segment["demo_data"] is True
@@ -51,7 +51,7 @@ def test_note_cannot_link_to_another_survey_segment():
     )
     with pytest.raises(HTTPException) as error:
         create_evidence(
-            "hour-1-demo-corridor",
+            "demo-nagpur-corridor",
             EvidenceCreate(segment_id=segment["id"], description="DEMO DATA mismatch test"),
         )
     assert error.value.status_code == 400
