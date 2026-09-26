@@ -28,6 +28,7 @@ export function ReviewInbox() {
   const [screeningResult, setScreeningResult] = useState<ScreeningResult | null>(null);
   const [surveyId, setSurveyId] = useState<string | null>(null);
   const [surveyLabel, setSurveyLabel] = useState("");
+  const [savingId, setSavingId] = useState<string | null>(null);
 
   async function load(nextProfile = profile, requestedSurveyId = surveyId ?? undefined) {
     setMessage("Loading the selected survey…");
@@ -80,6 +81,8 @@ export function ReviewInbox() {
   useEffect(() => { void load().catch(() => setMessage("Review service unavailable.")); }, []);
 
   async function decide(id: string, decision: string) {
+    setSavingId(id);
+    setMessage("Saving your answer…");
     const body = decision === "confirmed"
       ? { decision, severity: "medium", note: "Demo reviewer decision" }
       : { decision, note: "Demo reviewer decision" };
@@ -90,9 +93,16 @@ export function ReviewInbox() {
     });
     if (!response.ok) {
       setMessage("Could not save the review. No score was updated.");
+      setSavingId(null);
       return;
     }
     await load();
+    setMessage(decision === "confirmed"
+      ? "Saved. This finding can now be added to the planning list. It still does not prove the path is safe."
+      : decision === "rejected"
+        ? "Saved. This finding will not be offered for planning."
+        : "Saved. This finding remains uncertain and cannot be added for planning.");
+    setSavingId(null);
   }
 
   return (
@@ -132,9 +142,9 @@ export function ReviewInbox() {
           <p>Source: sample record. A person must check it before we use it.</p>
           <p>Current answer: {item.latest_decision ?? "Not checked yet"}</p>
           <div className="review-actions">
-            <button type="button" onClick={() => void decide(item.id, "confirmed")}>This looks correct</button>
-            <button type="button" onClick={() => void decide(item.id, "rejected")}>This is not correct</button>
-            <button type="button" onClick={() => void decide(item.id, "uncertain")}>I need more information</button>
+            <button type="button" disabled={savingId !== null} onClick={() => void decide(item.id, "confirmed")}>{savingId === item.id ? "Saving…" : "This looks correct"}</button>
+            <button type="button" disabled={savingId !== null} onClick={() => void decide(item.id, "rejected")}>This is not correct</button>
+            <button type="button" disabled={savingId !== null} onClick={() => void decide(item.id, "uncertain")}>I need more information</button>
           </div>
         </article>
       ))}
