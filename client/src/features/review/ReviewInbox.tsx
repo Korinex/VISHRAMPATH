@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 type Item = {
   id: string;
+  segment_id: string;
   class_code: string;
   description: string;
   source: string;
@@ -124,7 +125,8 @@ export function ReviewInbox() {
       </aside>}
       {items.map((item) => (
         <article className="review-card" key={item.id}>
-          <p>{item.class_code.replaceAll("_", " ")}</p>
+          <p>{item.class_code.replaceAll("_", " ")} · {item.segment_id}</p>
+          <div className="evidence-placeholder">ILLUSTRATIVE EVIDENCE RECORD<br /><span>No photo or video is attached in this prototype.</span></div>
           <p>{item.description}</p>
           <p>Source: {item.source}. Confidence is not proof.</p>
           <p>Current decision: {item.latest_decision ?? "Not reviewed"}</p>

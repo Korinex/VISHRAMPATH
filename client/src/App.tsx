@@ -89,6 +89,7 @@ function StackCard({ title, status, detail, state }: { title: string; status: st
 }
 
 function Overview({ onNavigate, connection, surveyCount }: { onNavigate: (view: View) => void; connection: Connection; surveyCount: number }) {
+  const [judgeMode, setJudgeMode] = useState(false);
   return (
     <div className="view-stack">
       <section className="hero-panel">
@@ -98,6 +99,7 @@ function Overview({ onNavigate, connection, surveyCount }: { onNavigate: (view: 
           <p className="hero-lede">Choose a walking profile and language. VishraamPath shows a gentler route with simple guidance and clearly marks what is not yet assessed.</p>
           <div className="hero-actions">
             <button className="button button--dark" type="button" onClick={() => onNavigate("route")}>Plan my route <Arrow /></button>
+            <button className="button button--outline" type="button" onClick={() => setJudgeMode((open) => !open)}>{judgeMode ? "Close judge walkthrough" : "Run the 3-minute demo"}</button>
             <button className="text-button" type="button" onClick={() => onNavigate("survey")}>See how it works <span aria-hidden="true">→</span></button>
           </div>
           <p className="hero-note"><span className="live-pip" /> PROTOTYPE WORKSPACE <span className="hero-note-divider">/</span> DEMO DATA ONLY</p>
@@ -108,6 +110,13 @@ function Overview({ onNavigate, connection, surveyCount }: { onNavigate: (view: 
           <div className="illustration-footer"><span>Evidence → a gentler route → an actionable repair record</span><span>Concept only</span></div>
         </div>
       </section>
+
+      {judgeMode && <section className="judge-walkthrough" aria-labelledby="judge-walkthrough-title">
+        <div><p className="eyebrow">JUDGE MODE · FOLLOW ONE RECORD</p><h2 id="judge-walkthrough-title">See the same segment move through the product.</h2><p>Use the four steps below. Each opens a working prototype screen and keeps the demo boundaries visible.</p></div>
+        <div className="judge-steps">
+          {[{ view: "route" as View, number: "01", title: "Plan a route", detail: "See the seeded corridor map and choose a sample option." }, { view: "review" as View, number: "02", title: "Review evidence", detail: "Confirm, reject, or mark an illustrative suggestion uncertain." }, { view: "repairs" as View, number: "03", title: "Create a Fix-First item", detail: "Send a confirmed observation to the advisory queue." }, { view: "repeat" as View, number: "04", title: "Check again", detail: "Link a repeat survey before calling anything verified." }].map((step) => <button type="button" key={step.view} className="judge-step" onClick={() => onNavigate(step.view)}><span>{step.number}</span><strong>{step.title}</strong><small>{step.detail}</small><i aria-hidden="true">→</i></button>)}
+        </div>
+      </section>}
 
       <section className="truth-strip" aria-label="Prototype boundaries">
         <div className="truth-icon" aria-hidden="true">i</div>
@@ -144,7 +153,7 @@ function Overview({ onNavigate, connection, surveyCount }: { onNavigate: (view: 
         <div className="section-head"><div><p className="eyebrow">TECHNOLOGY, HONESTLY LABELLED</p><h2>Built now. Demonstrated with fixtures. Planned for the field.</h2></div><p className="section-side-note section-side-note--wide">The presentation stack and this code prototype are not the same thing. The cards below make that explicit.</p></div>
         <div className="stack-grid">
           <StackCard state="active" status="RUNNING IN THIS PROTOTYPE" title="React · TypeScript · Vite · Tailwind · FastAPI" detail="Python REST API and React interface run locally; SQLite stores demo workflow state. Review decisions, route fixture requests, repair actions, CSV export, repeat links, browser text-to-speech, and Open-Meteo city-centre weather context are wired." />
-          <StackCard state="fixture" status="PARTIAL / MAP CONTEXT ONLY" title="Leaflet · OpenStreetMap · OSRM · GraphHopper" detail="Leaflet renders a city-centre context map with OSM attribution. OSRM/GraphHopper routing is not connected; route output remains a hand-authored JSON fixture with no endpoints, distance, or geometry." />
+          <StackCard state="fixture" status="SEEDED MAP / ROUTING NOT LIVE" title="Leaflet · OpenStreetMap · seeded corridor geometry" detail="Leaflet now renders a bounded illustrative corridor with four coloured segments, evidence markers, and visible attribution. OSRM/GraphHopper routing is not connected; geometry and route options remain hand-authored demo data." />
           <StackCard state="planned" status="PROPOSED FOR PILOT / NOT WIRED HERE" title="YOLO11 · OpenCV · IndicConformer" detail="Also proposed: phone GPS/IMU, on-device face/plate blur, official heat alerts, versioned JSON rule packs, AI4Bharat speech-to-text, Piper TTS, Jinja2/WeasyPrint reports, and PostgreSQL/PostGIS at scale. These need implementation, permissions, and validation." />
         </div>
         <div className="tech-footnote"><span>SCREENING RULE PACK: DRAFT · score withheld · status stays “Not assessed”</span><span>FIELD DATA: NOT COLLECTED · media capture disabled</span><span>RECORDS IN THIS DEMO: {surveyCount}</span></div>

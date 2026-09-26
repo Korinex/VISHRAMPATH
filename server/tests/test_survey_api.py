@@ -33,7 +33,7 @@ def test_ui_cannot_assert_permission_without_recorded_check():
 def test_segment_and_note_inherit_demo_marker():
     segment = create_segment(
         "demo-nagpur-corridor",
-        SegmentCreate(sequence_no=2, street_label="Demo segment two"),
+        SegmentCreate(sequence_no=5, street_label="Demo segment five"),
     )
     note = create_evidence(
         "demo-nagpur-corridor",
