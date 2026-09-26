@@ -14,43 +14,51 @@ class RouteRequest(BaseModel):
     destination_id: str
     profile_id: Literal["walking_stick", "wheelchair"]
     language: Literal["mr", "hi"]
+    origin_label: str = "Starting point"
+    destination_label: str = "Destination"
 
 
 @router.post("/routes/plan")
 def plan_route(request: RouteRequest) -> dict:
     fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
-    routes = [
-        item for item in fixture["options"]
-        if item["origin_id"] == request.origin_id
-        and item["destination_id"] == request.destination_id
-    ]
-    if not routes:
-        raise HTTPException(status_code=404, detail="No demo route for that pair")
-    route = routes[0]
+    routes = fixture["options"]
+    profile_label = "walking with a stick" if request.profile_id == "walking_stick" else "using a wheelchair"
+    origin_label = request.origin_label.strip() or "Starting point"
+    destination_label = request.destination_label.strip() or "Destination"
 
     def present(item: dict) -> dict:
+        base_instructions = item["instructions"][request.language]
+        profile_instruction = (
+            f"This sample is prepared for {profile_label}. Check the surface and rest points before a real journey."
+            if request.language == "en"
+            else base_instructions[0]
+        )
         return {
             "route_id": item["id"],
-            "label": item["label"],
-            "selection_reason": item["selection_reason"],
+            "label": f"{item['label']} · {profile_label}",
+            "selection_reason": f"{item['selection_reason']} This is a simulated comparison for {profile_label}.",
             "segments": item["segments"],
             "warnings": item["limitations"],
-            "instructions": item["instructions"][request.language],
+            "instructions": [profile_instruction, *base_instructions],
         }
+
+    route = routes[0]
+    presented_routes = [present(item) for item in routes]
 
     return {
         "route_id": route["id"],
         "profile_id": request.profile_id,
         "language": request.language,
+        "origin_label": origin_label,
+        "destination_label": destination_label,
         "route_source": fixture["route_source"],
         "geometry": fixture["geometry"],
         "segments": route["segments"],
-        "warnings": route["limitations"],
-        "instructions": route["instructions"][request.language],
-        "estimated": True,
+        "warnings": [*route["limitations"], f"Simulated for {profile_label}; this is not live navigation."],
+        "instructions": presented_routes[0]["instructions"],
         "demo_data": True,
-        "limitations": [fixture["notice"], "Screening is decision support, not a safety guarantee."],
-        "options": [present(item) for item in routes],
-        "corridor": fixture["corridor"],
+        "limitations": [fixture["notice"], "Your place names change this demonstration label only; no geocoding or live navigation is performed."],
+        "options": presented_routes,
+        "corridor": {**fixture["corridor"], "title": f"Simulated path: {origin_label} → {destination_label}"},
         "rule_pack": fixture["rule_pack"],
     }

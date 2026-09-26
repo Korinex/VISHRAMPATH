@@ -171,12 +171,29 @@ def create_evidence(survey_id: str, payload: EvidenceCreate) -> dict:
             if segment is None:
                 raise HTTPException(status_code=400, detail="Segment does not belong to this survey")
         connection.execute(
-            """INSERT INTO evidence_record
+            """
+            INSERT INTO evidence_record
                (id, survey_id, segment_id, evidence_type, description, captured_at,
                 blur_status, qa_status, demo_data, created_at)
                VALUES (?, ?, ?, 'note', ?, ?, 'not_applicable', 'passed', 1, ?)""",
             (evidence_id, survey_id, payload.segment_id, payload.description,
              payload.captured_at, now),
         )
+        if payload.segment_id:
+            connection.execute(
+                """
+                INSERT INTO observation
+                    (id, segment_id, evidence_id, class_code, description, source,
+                     confidence, suggested_severity, demo_data, created_at)
+                VALUES (?, ?, ?, 'volunteer_note', ?, 'human_entry', NULL, NULL, 1, ?)
+                """,
+                (
+                    str(uuid4()),
+                    payload.segment_id,
+                    evidence_id,
+                    f"Sample note from the volunteer: {payload.description}",
+                    now,
+                ),
+            )
     return {"id": evidence_id, **payload.model_dump(), "evidence_type": "note",
-            "demo_data": True}
+            "demo_data": True, "review_status": "ready_for_human_check" if payload.segment_id else "not_linked_to_segment"}

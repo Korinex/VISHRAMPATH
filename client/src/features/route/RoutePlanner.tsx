@@ -6,6 +6,8 @@ type Plan = {
   route_id: string;
   profile_id: string;
   language: string;
+  origin_label: string;
+  destination_label: string;
   route_source: string;
   segments: string[];
   warnings: string[];
@@ -67,6 +69,8 @@ export function RoutePlanner() {
         body: JSON.stringify({
           origin_id: "demo-origin",
           destination_id: "demo-market",
+          origin_label: cleanOrigin,
+          destination_label: cleanDestination,
           profile_id: profile,
           language,
         }),
@@ -106,7 +110,7 @@ export function RoutePlanner() {
     <section aria-labelledby="route-title">
       <p className="eyebrow">STEP 1 · TELL US WHERE YOU WANT TO GO</p>
       <h2 id="route-title">Plan a walk</h2>
-      <p className="route-helper">Enter your starting place and where you want to go. This is a sample map for the demonstration; we do not need your phone location.</p>
+        <p className="route-helper">Enter your starting place and destination. Your words will appear on the simulated map. We do not use phone location or claim a real route.</p>
       <form className="route-form route-form--senior" onSubmit={submit}>
         <label htmlFor="route-origin">Where are you starting?
           <input id="route-origin" value={origin} onChange={(event) => setOrigin(event.target.value)} placeholder="For example: my home" autoComplete="street-address" />
@@ -134,7 +138,7 @@ export function RoutePlanner() {
           <span className="route-fixture-tag">SAMPLE ONLY</span>
           <strong>Choose one of {plan.options.length} sample routes</strong>
         </div>
-        <p className="route-profile-line">For <strong>{origin}</strong> to <strong>{destination}</strong> · {profileLabels[plan.profile_id]} · {languageLabels[plan.language]}</p>
+        <p className="route-profile-line">Simulated journey: <strong>{plan.origin_label}</strong> → <strong>{plan.destination_label}</strong> · Prepared for {profileLabels[plan.profile_id]} · {languageLabels[plan.language]}</p>
         <div className="route-options" aria-label="Sample route options">
           {plan.options.map((option) => <button key={option.route_id} type="button" className={`route-option ${plan.route_id === option.route_id ? "route-option--selected" : ""}`} onClick={() => chooseOption(option)} aria-pressed={plan.route_id === option.route_id}>
             <span className="route-option-label">{plan.route_id === option.route_id ? "SELECTED SAMPLE OPTION" : "SAMPLE OPTION"}</span>
@@ -142,7 +146,7 @@ export function RoutePlanner() {
             <span>{option.selection_reason}</span>
           </button>)}
         </div>
-        <CorridorMap corridor={plan.corridor} />
+        <CorridorMap corridor={plan.corridor} originLabel={plan.origin_label} destinationLabel={plan.destination_label} activeSegmentIds={plan.segments} />
         <section className="rule-pack-panel" aria-labelledby="rule-pack-title">
           <div><span className="explainer-index">WHY THE STATUS STAYS HONEST</span><h3 id="rule-pack-title">{plan.rule_pack.title}</h3><p>Rule pack {plan.rule_pack.version} · {plan.rule_pack.standard_edition}</p></div>
           <span className="rule-pack-status">{plan.rule_pack.status === "draft" ? "DRAFT · PENDING VALIDATION" : plan.rule_pack.status}</span>

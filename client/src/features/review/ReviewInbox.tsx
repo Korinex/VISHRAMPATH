@@ -20,7 +20,7 @@ type ScreeningResult = {
 
 type Survey = { id: string; label: string; demo_data?: boolean };
 
-export function ReviewInbox() {
+export function ReviewInbox({ initialSurveyId }: { initialSurveyId?: string }) {
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [message, setMessage] = useState("Loading demo surveys…");
@@ -78,7 +78,7 @@ export function ReviewInbox() {
         : "This survey has no segment yet. Add one in Survey. Saving a segment does not generate an AI observation.");
   }
 
-  useEffect(() => { void load().catch(() => setMessage("Review service unavailable.")); }, []);
+  useEffect(() => { void load(profile, initialSurveyId).catch(() => setMessage("Review service unavailable.")); }, [initialSurveyId]);
 
   async function decide(id: string, decision: string) {
     setSavingId(id);

@@ -6,6 +6,7 @@ from app.survey_routes import (
     EvidenceCreate, SegmentCreate, SurveyCreate, create_evidence,
     create_segment, create_survey, initialize_survey_schema,
 )
+from app.review_routes import initialize_review_schema, suggestions
 
 
 @pytest.fixture(autouse=True)
@@ -13,6 +14,7 @@ def fresh_demo_db(tmp_path, monkeypatch):
     monkeypatch.setenv("VISHRAAMPATH_DB", str(tmp_path / "hour2.sqlite3"))
     initialize_database()
     initialize_survey_schema()
+    initialize_review_schema()
 
 
 def test_new_survey_is_demo_and_permission_stays_unknown():
@@ -42,6 +44,9 @@ def test_segment_and_note_inherit_demo_marker():
     assert segment["demo_data"] is True
     assert note["demo_data"] is True
     assert note["evidence_type"] == "note"
+    assert note["review_status"] == "ready_for_human_check"
+    observations = suggestions("demo-nagpur-corridor")["items"]
+    assert any(item["class_code"] == "volunteer_note" for item in observations)
 
 
 def test_note_cannot_link_to_another_survey_segment():
