@@ -45,10 +45,10 @@ npm run build
 
 The workspace presents the intended end-to-end loop:
 
-1. **Survey a corridor:** create demo survey records and segment stubs. Field capture and media upload are deliberately disabled.
-2. **Review suggestions:** save a human decision on one of four seeded corridor observations. These are illustrative fixtures, not YOLO/OpenCV inferences or observed street conditions.
+1. **Survey a corridor:** create a demo survey, add a path section, and save a short sample note. The note becomes a reviewable observation; field capture, GPS, and media upload are deliberately disabled.
+2. **Review suggestions:** save a human decision on a seeded or newly created sample observation. These are illustrative fixtures, not YOLO/OpenCV inferences or observed street conditions.
 3. **Screen a segment:** missing field evidence and an unverified rule pack remain **Not assessed**; numerical screening is withheld.
-4. **Explore a gentler route:** choose walking-stick or wheelchair profile and Marathi or Hindi. The route shows a seeded illustrative Leaflet corridor with four coloured segments, two sample options, and a draft rule-pack panel. Browser text-to-speech can read the visible fixture text on supported devices. A separate Open-Meteo request supplies current **city-centre weather context only**; it does not alter route selection or assert corridor conditions.
+4. **Explore a simulated route:** type any start and end labels, choose walking-stick or wheelchair profile and Marathi or Hindi. The labels and selected profile change the simulated route output; no geocoding or live navigation is claimed. The map shows four illustrative segments, two sample options, and a draft rule-pack panel. Browser text-to-speech can read the visible fixture text on supported devices. A separate Open-Meteo request supplies current **city-centre weather context only**; it does not alter route selection or assert corridor conditions.
 5. **Fix-First queue:** only a human-confirmed demo item may be queued. Ordering is severity-only and advisory; costs stay blank without a source-backed estimate. CSV and printable advisory HTML exports are available.
 6. **Re-survey & compare:** create demo surveys and link segments. A comparison or action note is not proof of a verified repair.
 
@@ -60,13 +60,13 @@ The workspace presents the intended end-to-end loop:
 |---|---|---|
 | Web app | React, TypeScript, Vite, Tailwind CSS, Leaflet seeded corridor map | Live geocoding and navigation |
 | API and storage | Python, FastAPI, REST endpoints, SQLite | PostgreSQL/PostGIS for scale |
-| Map and routing | OpenStreetMap tiles with visible attribution; hand-authored illustrative corridor geometry; selectable sample route options | OSRM baseline routes, GraphHopper custom profiles, live georeferenced route geometry |
+| Map and routing | OpenStreetMap tiles with visible attribution; hand-authored illustrative corridor geometry; typed labels and selected sample segments visibly update the simulated map | OSRM baseline routes, GraphHopper custom profiles, live georeferenced route geometry |
 | Route and weather context | Hand-authored route JSON; browser speech synthesis; Open-Meteo current conditions for the city-centre reference | Route-aware weather and official heat alerts |
-| Survey and privacy | Demo forms; field capture and media upload disabled | Phone GPS/IMU, on-device face/plate blur, privacy QA |
+| Survey and privacy | Demo survey, segment, and note-to-review forms; field capture, GPS, and media upload disabled | Phone GPS/IMU, on-device face/plate blur, privacy QA |
 | AI and language | Human-review workflow fixture; browser Web Speech synthesis for visible route text; no model inference | YOLO11, OpenCV, AI4Bharat IndicConformer speech-to-text, Piper TTS |
 | Weather and reports | Open-Meteo current city-centre context (not a route safety input); draft JSON rule-pack panel; printable advisory HTML report | Official heat alerts; validated rule packs; Jinja2 and WeasyPrint |
 
-Runtime app components are connected to the local API. The seeded corridor map is illustrative demo geometry, not a field survey; it does not create street-level evidence, live navigation, verified accessibility rules, or engineering-grade repair estimates. Technology named as proposed must not be described as a working feature. Open-Meteo and OpenStreetMap attribution are displayed in the app; external public services are best-effort and do not replace a production provider review.
+Runtime app components are connected to the local API. Typed places change labels and the selected sample option changes highlighted segments, but the line is still simulated geometry, not a geocoded route or field survey. The workflow can create a sample note, carry it to human review, and make a confirmed note eligible for the advisory planning list; it does not create street-level evidence, live navigation, verified accessibility rules, or engineering-grade repair estimates. Technology named as proposed must not be described as a working feature. Open-Meteo and OpenStreetMap attribution are displayed in the app; external public services are best-effort and do not replace a production provider review.
 
 ## Data and safety boundaries
 

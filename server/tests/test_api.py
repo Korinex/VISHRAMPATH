@@ -61,7 +61,7 @@ def test_demo_marker_is_explicit_and_reset_is_idempotent(tmp_path, monkeypatch) 
     items = response.json()["items"]
     assert len(items) == 1
     assert items[0]["id"] == "demo-nagpur-corridor"
-    assert items[0]["label"] == "DEMO DATA / Nagpur corridor placeholder"
+    assert items[0]["label"] == "DEMO DATA / Nagpur corridor sample"
     assert items[0]["capture_mode"] == "demo_fixture"
     assert items[0]["permission_status"] == "unknown"
     assert items[0]["length_m"] is None

@@ -504,6 +504,16 @@ h1, h2, h3, p { margin-top: 0; }
 .evidence-placeholder { margin: 9px 0 12px; padding: 18px; border: 1px dashed #aab7ab; background: repeating-linear-gradient(135deg, #f5f8f4, #f5f8f4 8px, #edf2ec 8px, #edf2ec 16px); color: #4e6958; font-size: 12px; font-weight: 800; letter-spacing: .08em; line-height: 1.5; text-align: center; }
 .evidence-placeholder span { color: #68756d; font-size: 13px; font-weight: 500; letter-spacing: 0; }
 
+.evidence-form { border-top: 4px solid var(--green); }
+.evidence-form textarea { width: 100%; resize: vertical; }
+.repeat-result-card { margin-top: 20px; padding: 20px; border: 2px solid var(--green); background: var(--green-wash); }
+.repeat-result-card h3 { margin-bottom: 14px; }
+.repeat-result-card > div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid #c4d8c9; }
+.repeat-result-card > div span { color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: .08em; }
+.repeat-result-card > div strong { font-size: 16px; }
+.repeat-result-card p { margin: 14px 0 0; }
+.corridor-map-notice strong { color: var(--accent-deep); }
+
 /* Senior-friendly reading mode: plain hierarchy, generous spacing, and 44px+ controls. */
 body { font-size: 16px; line-height: 1.55; }
 .eyebrow { font-size: 12px; letter-spacing: .1em; line-height: 1.5; }

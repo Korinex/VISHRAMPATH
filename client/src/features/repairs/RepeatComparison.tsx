@@ -12,6 +12,7 @@ export function RepeatComparison() {
   const [baselineSegment, setBaselineSegment] = useState("");
   const [repeatSegment, setRepeatSegment] = useState("");
   const [result, setResult] = useState("");
+  const [comparison, setComparison] = useState<{ before: string; after: string; status: string } | null>(null);
 
   useEffect(() => {
     fetch("/api/v1/surveys").then((response) => response.json())
@@ -39,9 +40,19 @@ export function RepeatComparison() {
       }),
     });
     const data = await response.json();
-    setResult(response.ok
-      ? `DEMO DATA. Link created. Alignment: ${data.alignment_status}. Not a verified repair.`
-      : data.detail ?? "Comparison link could not be created.");
+    if (!response.ok) {
+      setComparison(null);
+      setResult(data.detail ?? "Comparison link could not be created.");
+      return;
+    }
+    const beforeLabel = baselineSegments.find((item) => item.id === baselineSegment)?.street_label ?? baselineSegment;
+    const afterLabel = repeatSegments.find((item) => item.id === repeatSegment)?.street_label ?? "No aligned section selected";
+    setComparison({
+      before: `${baselineSurvey} · ${beforeLabel}`,
+      after: `${repeatSurvey} · ${afterLabel}`,
+      status: "Not verified: this demo stores the link but does not measure a real change.",
+    });
+    setResult(`Saved. The sample before-and-after link is ready for a future field check.`);
   }
 
   return <section aria-labelledby="repeat-title">
@@ -61,5 +72,11 @@ export function RepeatComparison() {
     </select></label>
     <button type="button" onClick={() => void submit()}>Save demo comparison</button>
     <p aria-live="polite">{result}</p>
+    {comparison && <section className="repeat-result-card" aria-live="polite">
+      <h3>Sample comparison saved</h3>
+      <div><span>BEFORE</span><strong>{comparison.before}</strong></div>
+      <div><span>AFTER</span><strong>{comparison.after}</strong></div>
+      <p><strong>{comparison.status}</strong> A person must compare field evidence before calling a path improved.</p>
+    </section>}
   </section>;
 }

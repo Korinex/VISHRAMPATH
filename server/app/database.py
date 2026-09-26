@@ -7,7 +7,7 @@ SERVER_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_DB_PATH = SERVER_DIR / "data" / "vishraampath.sqlite3"
 MIGRATIONS_DIR = SERVER_DIR / "migrations"
 DEMO_SURVEY_ID = "demo-nagpur-corridor"
-DEMO_SURVEY_LABEL = "DEMO DATA / Nagpur corridor placeholder"
+DEMO_SURVEY_LABEL = "DEMO DATA / Nagpur corridor sample"
 
 
 def insert_demo_marker(connection: sqlite3.Connection) -> None:
