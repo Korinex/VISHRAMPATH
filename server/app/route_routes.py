@@ -51,4 +51,6 @@ def plan_route(request: RouteRequest) -> dict:
         "demo_data": True,
         "limitations": [fixture["notice"], "Screening is decision support, not a safety guarantee."],
         "options": [present(item) for item in routes],
+        "corridor": fixture["corridor"],
+        "rule_pack": fixture["rule_pack"],
     }

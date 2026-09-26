@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { CorridorMap, type Corridor } from "./CorridorMap";
 
 type Plan = {
   route_id: string;
@@ -12,6 +13,8 @@ type Plan = {
   demo_data: boolean;
   limitations: string[];
   options: RouteOption[];
+  corridor: Corridor;
+  rule_pack: { version: string; title: string; status: string; standard_edition: string; checks: Array<{ id: string; label: string; status: string }> };
 };
 
 type RouteOption = {
@@ -139,6 +142,12 @@ export function RoutePlanner() {
             <span>{option.selection_reason}</span>
           </button>)}
         </div>
+        <CorridorMap corridor={plan.corridor} />
+        <section className="rule-pack-panel" aria-labelledby="rule-pack-title">
+          <div><span className="explainer-index">WHY THE STATUS STAYS HONEST</span><h3 id="rule-pack-title">{plan.rule_pack.title}</h3><p>Rule pack {plan.rule_pack.version} · {plan.rule_pack.standard_edition}</p></div>
+          <span className="rule-pack-status">{plan.rule_pack.status === "draft" ? "DRAFT · PENDING VALIDATION" : plan.rule_pack.status}</span>
+          <div className="rule-checks">{plan.rule_pack.checks.map((check) => <div key={check.id}><span className="rule-check-mark">?</span><span>{check.label}</span><strong>Not assessed</strong></div>)}</div>
+        </section>
         <div className="route-option-card">
           <div><span className="route-option-label">ROUTE STATUS</span><strong>Not assessed</strong></div>
           <div><span className="route-option-label">WHAT THIS SHOWS</span><strong>A route comparison with honest limits</strong></div>

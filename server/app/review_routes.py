@@ -26,20 +26,24 @@ def initialize_review_schema() -> None:
         connection.execute(
             """INSERT OR IGNORE INTO rule_pack
                (id, version, title, status, standard_edition, rules_json, created_at)
-               VALUES ('draft-screening', 'draft-0.1', 'Screening rules pending review',
-                       'draft', NULL, '{}', ?)""",
-            (now,),
+               VALUES ('draft-screening', 'draft-0.1', 'Senior comfort screening · pending validation',
+                       'draft', 'IRC:103-2012 / accessibility guidance', ?, ?)""",
+            ('{"surface":"unknown","clear_width":"unknown","crossing":"unknown","shade_rest":"unknown"}', now),
         )
-        connection.execute(
-            """INSERT OR IGNORE INTO observation
-               (id, segment_id, evidence_id, class_code, description, source,
-                confidence, suggested_severity, demo_data, created_at)
-               VALUES ('demo-review-card', 'demo-segment-01', 'demo-evidence-01',
-                       'fixture_example',
-                       'Illustrative card to demonstrate review controls only; no road condition was observed.',
-                       'fixture', NULL, NULL, 1, ?)""",
-            (now,),
-        )
+        observations = [
+            ("demo-review-card", "demo-segment-01", "demo-evidence-01", "uneven_surface", "Illustrative uneven surface example; a reviewer must confirm it before it can affect screening."),
+            ("demo-observation-02", "demo-segment-02", "demo-evidence-02", "blocked_clear_width", "Illustrative blocked clear-width example; no field measurement is attached."),
+            ("demo-observation-03", "demo-segment-03", "demo-evidence-03", "crossing_unknown", "Crossing and level-change information is missing in this demo and should remain uncertain."),
+            ("demo-observation-04", "demo-segment-04", "demo-evidence-04", "shade_rest_point", "Illustrative shade/rest point example; time-of-day and field verification are unavailable."),
+        ]
+        for observation_id, segment_id, evidence_id, class_code, description in observations:
+            connection.execute(
+                """INSERT OR IGNORE INTO observation
+                   (id, segment_id, evidence_id, class_code, description, source,
+                    confidence, suggested_severity, demo_data, created_at)
+                   VALUES (?, ?, ?, ?, ?, 'fixture', NULL, NULL, 1, ?)""",
+                (observation_id, segment_id, evidence_id, class_code, description, now),
+            )
 
 
 class DecisionInput(BaseModel):

@@ -3,15 +3,48 @@
   "route_source": "hand-authored illustrative fixture",
   "geometry": null,
   "notice": "Not a real mapped or field-verified route. No street coordinates or distance are claimed.",
+  "rule_pack": {
+    "id": "draft-screening",
+    "version": "draft-0.1",
+    "title": "Senior comfort screening · pending validation",
+    "status": "draft",
+    "standard_edition": "IRC:103-2012 / accessibility guidance",
+    "checks": [
+      {"id": "surface", "label": "Surface condition", "status": "unknown"},
+      {"id": "clear_width", "label": "Clear walking width", "status": "unknown"},
+      {"id": "crossing", "label": "Crossing / level change", "status": "unknown"},
+      {"id": "shade_rest", "label": "Shade and rest spacing", "status": "unknown"}
+    ]
+  },
+  "corridor": {
+    "title": "Demo corridor · Nagpur context",
+    "notice": "Illustrative geometry with seeded demo records. It is not a field survey.",
+    "center": [21.1466, 79.0889],
+    "zoom": 15,
+    "origin": [21.1438, 79.0848],
+    "destination": [21.1495, 79.0935],
+    "segments": [
+      {"id": "demo-segment-01", "label": "01 · Uneven surface", "status": "confirmed", "color": "#a53b2e", "coordinates": [[21.1438,79.0848],[21.1452,79.0867]], "evidence": "Uneven surface · illustrative reviewer record"},
+      {"id": "demo-segment-02", "label": "02 · Blocked clear width", "status": "confirmed", "color": "#a53b2e", "coordinates": [[21.1452,79.0867],[21.1469,79.0884]], "evidence": "Blocked walking space · illustrative reviewer record"},
+      {"id": "demo-segment-03", "label": "03 · Crossing not assessed", "status": "uncertain", "color": "#ad7621", "coordinates": [[21.1469,79.0884],[21.1482,79.0907]], "evidence": "Crossing / level change · information missing"},
+      {"id": "demo-segment-04", "label": "04 · Shade and rest point", "status": "confirmed", "color": "#326c57", "coordinates": [[21.1482,79.0907],[21.1495,79.0935]], "evidence": "Shade/rest point · illustrative reviewer record"}
+    ],
+    "markers": [
+      {"id": "marker-01", "position": [21.1452,79.0867], "label": "Uneven surface", "kind": "warning"},
+      {"id": "marker-02", "position": [21.1469,79.0884], "label": "Blocked clear width", "kind": "warning"},
+      {"id": "marker-03", "position": [21.1482,79.0907], "label": "Crossing not assessed", "kind": "unknown"},
+      {"id": "marker-04", "position": [21.1490,79.0925], "label": "Shade / rest point", "kind": "positive"}
+    ]
+  },
   "options": [
     {
       "id": "sample-route-gentler",
       "origin_id": "demo-origin",
       "destination_id": "demo-market",
       "label": "Gentler sample option",
-      "selection_reason": "Uses the available evidence to keep the confirmed obstruction visible before choosing a route.",
-      "segments": ["demo-segment-01"],
-      "limitations": ["No field measurements available", "Segment has not been assessed"],
+      "selection_reason": "Keeps the confirmed obstruction visible so the person can make an informed choice.",
+      "segments": ["demo-segment-01", "demo-segment-02", "demo-segment-03", "demo-segment-04"],
+      "limitations": ["No field measurements available", "Segments have not been assessed as accessible"],
       "instructions": {
         "mr": ["हा केवळ नमुना पर्याय आहे. प्रत्यक्ष मार्गदर्शन नाही."],
         "hi": ["यह केवल नमूना विकल्प है। यह वास्तविक मार्गदर्शन नहीं है।"]
@@ -21,9 +54,9 @@
       "id": "sample-route-shorter",
       "origin_id": "demo-origin",
       "destination_id": "demo-market",
-      "label": "Shorter sample option",
-      "selection_reason": "A comparison option for the demo; no shorter distance is measured or claimed.",
-      "segments": ["demo-segment-01"],
+      "label": "Other sample option",
+      "selection_reason": "A comparison option for the demo; no shorter distance or safer outcome is measured.",
+      "segments": ["demo-segment-02", "demo-segment-03"],
       "limitations": ["No field measurements available", "No distance or travel time available"],
       "instructions": {
         "mr": ["हा तुलना करण्यासाठी नमुना पर्याय आहे. प्रत्यक्ष मार्गदर्शन नाही."],

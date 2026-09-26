@@ -25,30 +25,37 @@ def initialize_survey_schema() -> None:
     project_root = Path(__file__).resolve().parents[2]
     with connect() as connection:
         connection.executescript((project_root / MIGRATION).read_text(encoding="utf-8"))
-        connection.execute(
-            """
-            INSERT OR IGNORE INTO segment
-                (id, survey_id, sequence_no, length_m, street_label,
-                 alignment_status, demo_data)
-            VALUES (?, ?, 1, NULL, 'Demo segment 01', 'uncertain', 1)
-            """,
-            ("demo-segment-01", "demo-nagpur-corridor"),
-        )
-        connection.execute(
-            """
-            INSERT OR IGNORE INTO evidence_record
-                (id, survey_id, segment_id, evidence_type, description,
-                 blur_status, qa_status, demo_data, created_at)
-            VALUES (?, ?, ?, 'note', ?, 'not_applicable', 'passed', 1, ?)
-            """,
-            (
-                "demo-evidence-01",
-                "demo-nagpur-corridor",
-                "demo-segment-01",
-                "DEMO DATA. Placeholder note only. No street condition was observed.",
-                datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            ),
-        )
+        segments = [
+            ("demo-segment-01", 1, "Demo corridor · uneven surface", "Uneven surface is marked in the illustrative evidence record."),
+            ("demo-segment-02", 2, "Demo corridor · blocked clear width", "A parked vehicle is used as an illustrative blocked-width example."),
+            ("demo-segment-03", 3, "Demo corridor · crossing information", "Crossing and level-change information is missing; this stays uncertain."),
+            ("demo-segment-04", 4, "Demo corridor · shade and rest", "A shade/rest point is included as an illustrative positive observation."),
+        ]
+        for segment_id, sequence_no, street_label, evidence_description in segments:
+            connection.execute(
+                """
+                INSERT OR IGNORE INTO segment
+                    (id, survey_id, sequence_no, length_m, street_label,
+                     alignment_status, demo_data)
+                VALUES (?, ?, ?, 50, ?, 'approximate', 1)
+                """,
+                (segment_id, "demo-nagpur-corridor", sequence_no, street_label),
+            )
+            connection.execute(
+                """
+                INSERT OR IGNORE INTO evidence_record
+                    (id, survey_id, segment_id, evidence_type, description,
+                     blur_status, qa_status, demo_data, created_at)
+                VALUES (?, ?, ?, 'note', ?, 'not_applicable', 'passed', 1, ?)
+                """,
+                (
+                    f"demo-evidence-{sequence_no:02d}",
+                    "demo-nagpur-corridor",
+                    segment_id,
+                    f"DEMO DATA. {evidence_description} No field media or measurement is attached.",
+                    datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                ),
+            )
 
 
 class SurveyCreate(BaseModel):
