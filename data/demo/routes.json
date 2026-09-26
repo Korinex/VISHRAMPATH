@@ -5,14 +5,29 @@
   "notice": "Not a real mapped or field-verified route. No street coordinates or distance are claimed.",
   "options": [
     {
-      "id": "sample-route-a",
+      "id": "sample-route-gentler",
       "origin_id": "demo-origin",
       "destination_id": "demo-market",
+      "label": "Gentler sample option",
+      "selection_reason": "Uses the available evidence to keep the confirmed obstruction visible before choosing a route.",
       "segments": ["demo-segment-01"],
       "limitations": ["No field measurements available", "Segment has not been assessed"],
       "instructions": {
-        "mr": ["हा केवळ नमुना मार्ग आहे. प्रत्यक्ष मार्गदर्शन नाही."],
-        "hi": ["यह केवल नमूना मार्ग है। यह वास्तविक मार्गदर्शन नहीं है।"]
+        "mr": ["हा केवळ नमुना पर्याय आहे. प्रत्यक्ष मार्गदर्शन नाही."],
+        "hi": ["यह केवल नमूना विकल्प है। यह वास्तविक मार्गदर्शन नहीं है।"]
+      }
+    },
+    {
+      "id": "sample-route-shorter",
+      "origin_id": "demo-origin",
+      "destination_id": "demo-market",
+      "label": "Shorter sample option",
+      "selection_reason": "A comparison option for the demo; no shorter distance is measured or claimed.",
+      "segments": ["demo-segment-01"],
+      "limitations": ["No field measurements available", "No distance or travel time available"],
+      "instructions": {
+        "mr": ["हा तुलना करण्यासाठी नमुना पर्याय आहे. प्रत्यक्ष मार्गदर्शन नाही."],
+        "hi": ["यह तुलना के लिए नमूना विकल्प है। यह वास्तविक मार्गदर्शन नहीं है।"]
       }
     }
   ]

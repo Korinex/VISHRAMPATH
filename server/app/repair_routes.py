@@ -1,4 +1,5 @@
 import csv
+import html
 import io
 import sqlite3
 from datetime import datetime, timezone
@@ -157,6 +158,35 @@ def export_queue() -> Response:
     return Response(
         content=output.getvalue(), media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=vishraampath-fix-first-demo.csv"},
+    )
+
+
+@router.get("/repair-queue/report.html")
+def report_queue() -> Response:
+    rows = list_queue()["items"]
+
+    def cell(value: object) -> str:
+        return html.escape("Not entered" if value is None or value == "" else str(value))
+
+    cards = "".join(
+        f"""<article class=\"item\"><h2>Priority {cell(row['priority_rank'])}: {cell(row['issue_code'])}</h2>
+        <p><strong>Segment:</strong> {cell(row['segment_id'])}</p>
+        <p><strong>Evidence:</strong> {cell(row['evidence_description'])}</p>
+        <p><strong>Suggested action:</strong> {cell(row['suggested_action'])}</p>
+        <p><strong>Severity:</strong> {cell(row['severity'])} · <strong>Status:</strong> {cell(row['status'])}</p>
+        <p><strong>Uncertainty:</strong> {cell(row['uncertainty_note'])}</p>
+        <p><strong>Cost:</strong> {cell(row['indicative_cost_amount'])} · No source-backed estimate is included.</p></article>"""
+        for row in rows
+    ) or "<p>No human-confirmed demo items are currently in the queue.</p>"
+    document = f"""<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>VishraamPath Fix-First demo report</title>
+    <style>body{{font:16px/1.5 Arial,sans-serif;color:#25352d;max-width:900px;margin:40px auto;padding:0 24px}}h1{{font-size:32px}}h2{{font-size:20px;margin-top:0}}.notice{{padding:16px;background:#f7f0dc;border-left:4px solid #ad7621}}.item{{border:1px solid #ccd5cc;padding:18px;margin:18px 0;page-break-inside:avoid}}.meta{{color:#52665a}}</style></head>
+    <body><h1>VishraamPath · Fix-First review report</h1><p class=\"meta\">Generated from the local prototype queue · DEMO DATA</p>
+    <div class=\"notice\"><strong>Advisory demo report.</strong> These records are illustrative, not field observations, engineering estimates, work orders, or proof of a completed repair. A repeat survey is required before calling a change verified.</div>
+    {cards}</body></html>"""
+    return Response(
+        content=document,
+        media_type="text/html",
+        headers={"Content-Disposition": "inline; filename=vishraampath-fix-first-demo-report.html"},
     )
 
 

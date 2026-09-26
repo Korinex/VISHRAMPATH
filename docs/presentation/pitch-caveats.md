@@ -6,6 +6,7 @@ Say these plainly when asked:
 - AI output is a **suggestion** until a human confirms it; reject/uncertain stay visible but never score.
 - Screening shows **"Not assessed"** where evidence is missing — that is not a pass.
 - Screening ≠ accessibility certification; "gentler route" ≠ guaranteed safe route.
+- The Leaflet / OpenStreetMap map is a city-centre context marker, not surveyed route geometry. Open-Meteo weather is a city-level snapshot only, is not an official heat alert, and does not change the sample route.
 - Repair costs stay blank unless a real source exists; priority is advisory planning info.
 - A later survey is a **repeat comparison** — never "verified repair" without an intervention record + re-check.
 - The 4-of-5 usability target is a **target, not a result**: "Not tested" unless real participants did it.

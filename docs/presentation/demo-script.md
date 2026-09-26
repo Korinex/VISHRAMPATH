@@ -9,7 +9,7 @@
 2. Open the survey + one ~50 m segment — say plainly: length/GPS are demo, not measured.
 3. Open one suggestion → make a real **Confirm / Reject / Not sure** decision — "a suggestion is not a finding".
 4. Open screening → show **"Not assessed" + rule version** → "screening only, not certification".
-5. Route: **walking-stick + Marathi**, then **wheelchair + Hindi** → captions/text visible, works with speech off → "labelled fixture, not a mapped or safe route".
+5. Route: **walking-stick + Marathi**, then **wheelchair + Hindi** → captions/text visible, works with speech off. Point out that the Leaflet/OSM city-centre map and Open-Meteo weather are contextual only; neither provides street-level evidence nor changes the hand-authored route fixture. Say: "This is not live navigation or a safety recommendation."
 6. Fix-First queue + CSV → evidence reference, advisory priority, costs blank (no source).
 7. Repeat comparison → "repeat comparison", NOT "verified repair" (no intervention + re-check).
 8. If time allows: disconnect Wi-Fi, repeat 4–7, note anything that breaks.

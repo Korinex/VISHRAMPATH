@@ -4,9 +4,9 @@ import type { FormEvent } from "react";
 type Props = { onCreated: () => void };
 
 export function SurveyForm({ onCreated }: Props) {
-  const [label, setLabel] = useState("");
-  const [reviewer, setReviewer] = useState("");
-  const [message, setMessage] = useState("");
+  const [label, setLabel] = useState("Nagpur Market Footpath 01");
+  const [reviewer, setReviewer] = useState("Asha Volunteer");
+  const [message, setMessage] = useState("Demo values are ready. Save the record to start the workflow.");
   const [saving, setSaving] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {

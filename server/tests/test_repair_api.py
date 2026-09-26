@@ -1,12 +1,12 @@
 import pytest
 from fastapi import HTTPException
-from app.database import initialize_database
+from app.database import initialize_database, list_surveys, reset_demo_fixture
 from app.repair_routes import (
     InterventionInput, RepairCreate, RepeatInput, add_intervention,
     create_repeat_link, create_repair, export_queue, initialize_repair_schema,
-    list_queue,
+    list_queue, report_queue,
 )
-from app.review_routes import DecisionInput, initialize_review_schema, review
+from app.review_routes import DecisionInput, initialize_review_schema, review, suggestions
 from app.survey_routes import (
     SegmentCreate, SurveyCreate, create_segment, create_survey,
     initialize_survey_schema,
@@ -44,6 +44,9 @@ def test_confirmed_queue_item_keeps_cost_blank_and_intervention_unverified():
     csv_response = export_queue()
     assert "demo_data" in csv_response.body.decode("utf-8")
     assert "uncertainty_note" in csv_response.body.decode("utf-8")
+    report_response = report_queue()
+    assert report_response.media_type == "text/html"
+    assert "Advisory demo report" in report_response.body.decode("utf-8")
     intervention = add_intervention(
         created["id"],
         InterventionInput(description="Demo-only action note", recorded_by="Team demo"),
@@ -84,3 +87,35 @@ def test_repeat_link_rejects_segment_from_wrong_survey():
             ),
         )
     assert error.value.status_code == 400
+
+def test_demo_reset_clears_workflow_state_and_restores_fixtures():
+    review("demo-review-card", DecisionInput(
+        decision="confirmed", severity="high", note="Demo-only review"
+    ))
+    repair = create_repair(RepairCreate(
+        observation_id="demo-review-card", suggested_action="Inspect illustrative sample"
+    ))
+    add_intervention(
+        repair["id"],
+        InterventionInput(description="Illustrative action note", recorded_by="Team demo"),
+    )
+    repeat_survey = create_survey(SurveyCreate(label="Demo repeat", surveyed_by="Team demo"))
+    repeat_segment = create_segment(
+        repeat_survey["id"],
+        SegmentCreate(sequence_no=1, street_label="Demo repeat segment"),
+    )
+    create_repeat_link(
+        repeat_survey["id"],
+        RepeatInput(
+            baseline_segment_id="demo-segment-01",
+            repeat_segment_id=repeat_segment["id"],
+            alignment_status="uncertain",
+            comparison_note="Demo comparison only",
+        ),
+    )
+
+    reset_demo_fixture()
+
+    assert len(list_surveys()) == 1
+    assert list_queue()["items"] == []
+    assert suggestions("demo-nagpur-corridor")["items"][0]["latest_decision"] is None
